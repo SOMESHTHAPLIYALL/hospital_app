@@ -1,8 +1,9 @@
 const BloodModel = require("../models/BloodModel");
+const PatientModel = require("../models/PatientModel");
 
 exports.createBlood = async (req, res) => {
   try {
-    const { name, bloodGroup, address, age } = req.body;
+    const { name, bloodGroup, address, age, id } = req.body;
     if (!name || !bloodGroup || !address || !age) {
       return res.status(400).send({
         message: "Please Fill all fields ",
@@ -17,6 +18,15 @@ exports.createBlood = async (req, res) => {
       age: age,
     });
     await blood.save();
+    const user = await PatientModel.findById(id);
+    if (!user) {
+      return res.status(400).send({
+        message: "User not found ",
+        success: false,
+      });
+    }
+    user.bloods.push(blood);
+    await user.save();
     return res.status(200).send({
       message: "Blood Created Succesfully",
       success: true,

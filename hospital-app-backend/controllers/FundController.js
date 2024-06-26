@@ -1,8 +1,8 @@
 const FundModel = require("../models/FundModel");
-
+const PatientModel = require("../models/PatientModel");
 exports.createNewFund = async (req, res) => {
   try {
-    const { name, totalFund } = req.body;
+    const { name, totalFund, id } = req.body;
     if (!name) {
       return res.status(400).send({
         message: "Please Fill name ",
@@ -17,11 +17,14 @@ exports.createNewFund = async (req, res) => {
       });
     }
 
-    const fund = await new FundModel({
+    const fund = new FundModel({
       name: name,
       totalfund: totalFund,
     });
     await fund.save();
+    const user = await PatientModel.findById(id);
+    user.funds.push(fund);
+    await user.save();
     return res.status(200).send({
       message: "Fund Created Succesfully",
       success: true,

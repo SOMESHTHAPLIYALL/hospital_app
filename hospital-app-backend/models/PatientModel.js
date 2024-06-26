@@ -19,6 +19,12 @@ const PatientSchema = new mongoose.Schema({
       ref: "Fund",
     },
   ],
+  bloods: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Blood",
+    },
+  ],
 });
 
 const Patient = mongoose.model("Patient", PatientSchema);

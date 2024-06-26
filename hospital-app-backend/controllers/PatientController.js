@@ -69,7 +69,9 @@ exports.loginUser = async (req, res) => {
 exports.singleUser = async (req, res) => {
   try {
     const { id } = req.body;
-    const user = await PatientModel.findById(id);
+    const user = await PatientModel.findById(id)
+      .populate("bloods")
+      .populate("funds");
     if (!user) {
       return res.status(400).send({
         message: "User not found",
